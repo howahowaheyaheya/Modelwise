@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: modelwise
+      POSTGRES_PASSWORD: modelwise_local_password
+      POSTGRES_DB: modelwise
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U modelwise -d modelwise"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    volumes:
+      - modelwise_data:/var/lib/postgresql/data
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://modelwise:modelwise_local_password@db:5432/modelwise
+      NEXTAUTH_SECRET: local-modelwise-secret-change-before-deployment
+      NEXTAUTH_URL: http://localhost:3000
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      STRIPE_PRICE_ID_FOUNDATIONS: ${STRIPE_PRICE_ID_FOUNDATIONS:-}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      RESEND_FROM_EMAIL: ${RESEND_FROM_EMAIL:-ModelWise <onboarding@resend.dev>}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-5.2}
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["sh", "-c", "npm run db:push && npm run db:seed && npm run dev -- --hostname 0.0.0.0"]
+volumes:
+  modelwise_data:

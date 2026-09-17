@@ -1,0 +1,48 @@
+{
+  "name": "modelwise",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:seed": "prisma db seed",
+    "setup": "npm run db:generate && npm run db:push && npm run db:seed",
+    "typecheck": "tsc --noEmit",
+    "security:grep": "! grep -RniE \"(sk-[A-Za-z0-9]{20,}|password\\s*[:=]\\s*[\"\\x27][^\"\\x27]+|BEGIN (RSA|OPENSSH) PRIVATE KEY)\" src prisma .env.example --exclude-dir=node_modules"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.17.1",
+    "next": "14.2.35",
+    "next-auth": "^4.24.11",
+    "prisma": "^6.17.1",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-markdown": "^10.1.0",
+    "resend": "^6.1.2",
+    "stripe": "^19.1.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.1",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@vitejs/plugin-react": "^4.7.0",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.35",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "tsx": "^4.20.6",
+    "typescript": "^5",
+    "vitest": "^3.2.4"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  }
+}
